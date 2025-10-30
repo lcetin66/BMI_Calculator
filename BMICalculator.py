@@ -4,62 +4,51 @@ window = Tk()
 window.title("BMI Calculator")
 window.minsize(width=300, height=400)
 
-weight_var = IntVar()
-height_var = IntVar()
+weight_var = StringVar()
+height_var = StringVar()
 
 def bmi_calculator():
-    global bmi
     try:
-        weight = weight_var.get()
-        if weight == 0 or "":
-            display.config(text="Please enter a value. Example: 80.50",justify="center")
-    except TclError:
-        display.config(text="Enter your weight as a number only! Example: 80.50",justify="center")
-    except ZeroDivisionError, UnboundLocalError:
-        display.config(text="Please enter a value. Example: 80.50",justify="center")
-    try:
-        height = height_var.get()
-        if height == 0:
-            display.config(text="\nPlease enter a value. Example: 180",justify="center")
-    except TclError:
-        display.config(text="Enter your height as a number only! Example: 180",justify="center")
-    except ZeroDivisionError, UnboundLocalError:
-        display.config(text="Please enter a value. Example: 180",justify="center")
+        weight = float(weight_var.get())
+        height = float(height_var.get())
 
-    bmi = round((weight / (height ** 2)*10000),2)
+        if height == 0 or weight == 0:
+            display.config(text="Please enter non-zero values.", justify="center")
+            return
 
-    if bmi < 18.5:
-        display.config(text="Your BMI: " + str(bmi)+".\nYou are in Underweight Category",justify="center")
-    elif 25 < bmi < 29.9:
-        display.config(text="Your BMI: " + str(bmi) + ".\nYou are in Overweight Category",justify="center")
-    elif 30 < bmi < 34.9:
-        display.config(text="Your BMI: " + str(bmi) + ".\nYou are in Obese I Category",justify="center")
-    elif 35 < bmi < 39.9:
-        display.config(text="Your BMI: " + str(bmi) + ".\nYou are in Obese II Category",justify="center")
-    elif 40 < bmi:
-        display.config(text="Your BMI: " + str(bmi) + ".\nYou are in Obese III Category",justify="center")
-    else:
-        display.config(text="Your BMI: " + str(bmi) + ".\nYou are in NORMAL Category",justify="center")
+        bmi = round(weight / (height ** 2) * 10000, 2)
 
+        if bmi < 18.5:
+            msg = f"Your BMI: {bmi}\nYou are Underweight"
+        elif bmi < 25:
+            msg = f"Your BMI: {bmi}\nYou are NORMAL"
+        elif bmi < 30:
+            msg = f"Your BMI: {bmi}\nYou are Overweight"
+        elif bmi < 35:
+            msg = f"Your BMI: {bmi}\nYou are in Obese I"
+        elif bmi < 40:
+            msg = f"Your BMI: {bmi}\nYou are in Obese II"
+        else:
+            msg = f"Your BMI: {bmi}\nYou are in Obese III"
 
-#Weight
-weight_label = Label(text='Enter your weight (kg)',font=('Helvetica', 10,'normal'),)
-weight_label.place(x=50,y=30)
-weight = Entry(window, textvariable=weight_var, border=0.5, width=20)
-weight.place(x=50,y=50)
+        display.config(text=msg, justify="center")
 
-#Height
-height_label = Label(text='Enter your height (m)',font=('Helvetica',10,'normal'))
-height_label.place(x=50,y=90)
-height = Entry(window, textvariable=height_var, border=0.5,width=20)
-height.place(x=50,y=110)
+    except ValueError:
+        display.config(text="Enter only numbers!\nExample: 80 (weight), 180 (height)", justify="center")
 
-#Button
-calculate = Button(text='Calculate', width=17, command=bmi_calculator)
-calculate.place(x=50,y=150)
+# Weight
+Label(text='Enter your weight (kg)', font=('Helvetica', 10, 'normal')).place(x=50, y=30)
+Entry(window, textvariable=weight_var, border=0.5, width=20).place(x=50, y=50)
 
-#Display
-display = Message(width=250)
-display.place(x=25,y=200)
+# Height
+Label(text='Enter your height (cm)', font=('Helvetica', 10, 'normal')).place(x=50, y=90)
+Entry(window, textvariable=height_var, border=0.5, width=20).place(x=50, y=110)
+
+# Button
+Button(text='Calculate', width=17, command=bmi_calculator).place(x=50, y=150)
+
+# Display
+display = Message(width=250, justify="center")
+display.place(relx=0.5, rely=0.6, anchor="center")
 
 window.mainloop()
